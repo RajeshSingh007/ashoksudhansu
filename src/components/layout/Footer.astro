@@ -5,8 +5,8 @@ import { site, nav, social, contactCta } from '../../config/site';
 const year = new Date().getFullYear();
 ---
 
-<footer id="contact" class="panel panel--stacked scroll-mt-24 bg-snow">
-  <Container class="pt-16 pb-12">
+<footer id="contact" class="panel panel--stacked scroll-mt-24 overflow-hidden bg-snow">
+  <Container class="pt-16 pb-14 sm:pt-20">
     <div class="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
       <div>
         <Eyebrow>Get in touch</Eyebrow>
@@ -17,9 +17,29 @@ const year = new Date().getFullYear();
         </h2>
         <a
           href={contactCta.href}
-          class="mt-5 inline-flex items-center rounded-[14px] border border-[#2c2e34] bg-obsidian px-5 py-3 text-[15px] font-medium text-snow transition-colors hover:bg-graphite"
+          class="group mt-6 inline-flex items-center gap-2.5 rounded-[14px] border border-[#2c2e34] bg-obsidian px-5 py-3 text-[15px] font-medium text-snow transition-colors hover:bg-graphite"
         >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3 7 9 6 9-6" />
+          </svg>
           {site.email}
+          <span
+            aria-hidden="true"
+            class="text-ember transition-transform duration-300 group-hover:translate-x-1"
+          >
+            →
+          </span>
         </a>
       </div>
 
@@ -31,8 +51,14 @@ const year = new Date().getFullYear();
               <li>
                 <a
                   href={item.href}
-                  class="text-[15px] text-graphite transition-colors hover:text-obsidian"
+                  class="group inline-flex items-center text-[15px] text-graphite transition-colors hover:text-obsidian"
                 >
+                  <span
+                    aria-hidden="true"
+                    class="inline-block max-w-0 overflow-hidden text-ember opacity-0 transition-all duration-300 group-hover:mr-2 group-hover:max-w-[1.25rem] group-hover:opacity-100"
+                  >
+                    →
+                  </span>
                   {item.label}
                 </a>
               </li>
@@ -49,8 +75,14 @@ const year = new Date().getFullYear();
               <li>
                 <a
                   href={item.href}
-                  class="text-[15px] text-graphite transition-colors hover:text-obsidian"
+                  class="group inline-flex items-center text-[15px] text-graphite transition-colors hover:text-obsidian"
                 >
+                  <span
+                    aria-hidden="true"
+                    class="inline-block max-w-0 overflow-hidden text-ember opacity-0 transition-all duration-300 group-hover:mr-2 group-hover:max-w-[1.25rem] group-hover:opacity-100"
+                  >
+                    →
+                  </span>
                   {item.label}
                 </a>
               </li>
@@ -60,6 +92,15 @@ const year = new Date().getFullYear();
       </nav>
     </div>
   </Container>
+
+  {/* Oversized wordmark — a quiet signature bleeding across the base. */}
+  <div aria-hidden="true" class="pointer-events-none select-none px-4">
+    <p
+      class="whitespace-nowrap text-center text-[clamp(2rem,12vw,13rem)] font-semibold leading-[0.8] tracking-[-0.045em] text-obsidian/[0.055]"
+    >
+      {site.fullName}
+    </p>
+  </div>
 
   <div class="border-t border-cloud">
     <Container>
