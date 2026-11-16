@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { listThoughts } from '../../lib/thoughts';
 import { formatDate } from '../../lib/format';
+import LikeButton from '../ideas/LikeButton';
 
 interface Item {
   slug: string;
@@ -67,7 +68,8 @@ export default function FeaturedThoughts({ seed }: Props) {
         </li>
       ) : (
         featured.map((item, i) => (
-          <li key={item.href} className="border-cloud [&:not(:first-child)]:border-t">
+          <li key={item.href} className="relative border-cloud [&:not(:first-child)]:border-t">
+            <LikeButton slug={item.slug} className="absolute right-0 top-8 z-10" />
             <a href={item.href} className="group flex gap-6 py-8 transition-opacity">
               <span className="select-none pt-1 text-[22px] font-semibold tabular-nums leading-none text-mist transition-colors group-hover:text-ember">
                 {String(i + 1).padStart(2, '0')}

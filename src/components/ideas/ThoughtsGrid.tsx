@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { listThoughts, deleteThought } from '../../lib/thoughts';
 import { formatDate } from '../../lib/format';
+import LikeButton from './LikeButton';
 
 interface Item {
   slug: string;
@@ -19,7 +20,8 @@ interface Props {
 
 function Card({ item, onDelete }: { item: Item; onDelete: (item: Item) => void }) {
   return (
-    <div className="card flex flex-col overflow-hidden transition-colors">
+    <div className="card relative flex flex-col overflow-hidden transition-colors">
+      <LikeButton slug={item.slug} className="absolute right-4 top-4 z-10" />
       <a href={item.href} className="group flex flex-1 flex-col p-7">
         <div className="flex items-center gap-3 text-[12px]">
           <span className="tag">{item.category}</span>

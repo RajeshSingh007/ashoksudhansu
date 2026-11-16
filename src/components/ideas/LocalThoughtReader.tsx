@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getThought, type Thought } from '../../lib/thoughts';
 import { formatDate } from '../../lib/format';
+import LikeButton from './LikeButton';
 
 // ── Tiny plain-text formatter ───────────────────────────────────────────────
 // Turns a free-written body into structured blocks so bullets, section
@@ -104,13 +105,16 @@ export default function LocalThoughtReader() {
       </a>
 
       {/* Header */}
-      <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px]">
-        <span className="tag">{thought.category}</span>
-        <time dateTime={thought.pubDate} className="text-fog">
-          {formatDate(new Date(thought.pubDate))}
-        </time>
-        <span className="text-mist" aria-hidden="true">·</span>
-        <span className="text-fog">{minutes} min read</span>
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3 text-[13px]">
+          <span className="tag">{thought.category}</span>
+          <time dateTime={thought.pubDate} className="text-fog">
+            {formatDate(new Date(thought.pubDate))}
+          </time>
+          <span className="text-mist" aria-hidden="true">·</span>
+          <span className="text-fog">{minutes} min read</span>
+        </div>
+        <LikeButton slug={thought.slug} showLabel />
       </div>
 
       <h1 className="mt-5 text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-obsidian sm:text-[52px]">
