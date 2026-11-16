@@ -30,8 +30,8 @@ const img = getImage(hero.image);
     <!-- Bottom scrim grounds the name + CTAs without dulling the whole image -->
     <div class="hero-scrim-bottom"></div>
 
-    <Container class="relative flex h-full flex-col justify-end pb-16 sm:pb-24">
-      <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+    <Container class="relative flex h-full flex-col justify-end pb-8 sm:pb-14">
+      <div class="flex flex-col gap-0 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
         <div class="max-w-2xl">
           <span
             class="hero-rise hero-rise-1 inline-block rounded-[12px] bg-ember px-2.5 py-1 text-[12px] font-medium uppercase tracking-[0.14em] text-white"
@@ -51,7 +51,7 @@ const img = getImage(hero.image);
             />.
           </p>
           <div class="hero-rise hero-rise-5 mt-8 flex flex-wrap gap-3">
-            <Button href={hero.primaryCta.href} variant="primary" size="lg">
+            <Button href={hero.primaryCta.href} variant="inverse" size="lg">
               {hero.primaryCta.label}
             </Button>
             <Button href={hero.secondaryCta.href} variant="inverse" size="lg">

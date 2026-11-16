@@ -17,7 +17,7 @@ interface Props {
   seed: Item[];
 }
 
-function Card({ item, onDelete }: { item: Item; onDelete: (slug: string) => void }) {
+function Card({ item, onDelete }: { item: Item; onDelete: (item: Item) => void }) {
   return (
     <div className="card flex flex-col overflow-hidden transition-colors">
       <a href={item.href} className="group flex flex-1 flex-col p-7">
@@ -48,7 +48,7 @@ function Card({ item, onDelete }: { item: Item; onDelete: (slug: string) => void
           <span className="text-mist" aria-hidden="true">·</span>
           <button
             type="button"
-            onClick={() => onDelete(item.slug)}
+            onClick={() => onDelete(item)}
             className="text-steel transition-colors hover:text-ember"
           >
             Delete
@@ -61,6 +61,7 @@ function Card({ item, onDelete }: { item: Item; onDelete: (slug: string) => void
 
 export default function ThoughtsGrid({ seed }: Props) {
   const [local, setLocal] = useState<Item[]>([]);
+  const [pending, setPending] = useState<Item | null>(null);
 
   function refresh() {
     listThoughts().then((list) =>
@@ -80,9 +81,24 @@ export default function ThoughtsGrid({ seed }: Props) {
 
   useEffect(refresh, []);
 
-  async function handleDelete(slug: string) {
-    if (!window.confirm('Delete this thought? This cannot be undone.')) return;
-    await deleteThought(slug);
+  // Lock scroll + Escape-to-close while the confirm dialog is open.
+  useEffect(() => {
+    if (!pending) return;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPending(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [pending]);
+
+  async function confirmDelete() {
+    if (!pending) return;
+    await deleteThought(pending.slug);
+    setPending(null);
     refresh();
   }
 
@@ -90,21 +106,79 @@ export default function ThoughtsGrid({ seed }: Props) {
     (a, b) => +new Date(b.pubDate) - +new Date(a.pubDate),
   );
 
-  if (all.length === 0) {
-    return (
-      <div className="card p-12 text-center">
-        <p className="text-[16px] text-steel">
-          No thoughts yet. Write the first one.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {all.map((item) => (
-        <Card key={item.href} item={item} onDelete={handleDelete} />
-      ))}
-    </div>
+    <>
+      {all.length === 0 ? (
+        <div className="card p-12 text-center">
+          <p className="text-[16px] text-steel">No thoughts yet. Write the first one.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {all.map((item) => (
+            <Card key={item.href} item={item} onDelete={setPending} />
+          ))}
+        </div>
+      )}
+
+      {pending && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-obsidian/50 p-4 backdrop-blur-sm"
+          onClick={() => setPending(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirm delete"
+        >
+          <div
+            className="card w-full max-w-sm p-7 text-center sm:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-ember/10 text-ember">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+              </svg>
+            </div>
+
+            <h3 className="mt-5 text-[22px] font-semibold tracking-[-0.01em] text-obsidian">
+              Delete this thought?
+            </h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-steel">
+              <span className="font-medium text-graphite">“{pending.title}”</span> will be gone for
+              good. This can’t be undone.
+            </p>
+
+            <div className="mt-7 flex justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setPending(null)}
+                className="inline-flex items-center justify-center rounded-[14px] border border-cloud bg-snow px-5 py-2.5 text-[15px] font-medium text-graphite transition-colors hover:border-mist"
+              >
+                Keep it
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="inline-flex items-center justify-center rounded-[14px] bg-ember px-5 py-2.5 text-[15px] font-medium text-white transition hover:brightness-110"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
