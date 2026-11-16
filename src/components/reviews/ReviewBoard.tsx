@@ -60,7 +60,7 @@ function ReviewCard({
       <span className="text-[44px] font-semibold leading-[0.6] text-ember" aria-hidden="true">
         “
       </span>
-      <blockquote className="mt-4 flex-1 text-[17px] leading-relaxed text-graphite">
+      <blockquote className="mt-4 flex-1 text-[17px] leading-relaxed text-graphite [overflow-wrap:anywhere]">
         {review.quote}
       </blockquote>
       <div className="mt-6 flex items-center gap-3">
@@ -116,7 +116,7 @@ function FeaturedCard({
           </div>
         )}
         {review ? (
-          <blockquote className="p-6 text-[16px] leading-relaxed text-graphite">
+          <blockquote className="p-6 text-[16px] leading-relaxed text-graphite [overflow-wrap:anywhere]">
             <span className="text-ember">“</span>
             {review.quote}
             <span className="text-ember">”</span>
@@ -285,6 +285,7 @@ export default function ReviewBoard({ imageSrc }: Props) {
                 <input
                   ref={firstFieldRef}
                   value={form.name}
+                  maxLength={80}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className={field}
                   placeholder="Your name"
@@ -296,6 +297,7 @@ export default function ReviewBoard({ imageSrc }: Props) {
                 </span>
                 <input
                   value={form.role}
+                  maxLength={80}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className={field}
                   placeholder="e.g. Teacher, Pune"
@@ -305,12 +307,14 @@ export default function ReviewBoard({ imageSrc }: Props) {
                 <span className="text-[13px] font-medium text-graphite">Your review</span>
                 <textarea
                   value={form.quote}
+                  maxLength={600}
                   onChange={(e) => setForm({ ...form, quote: e.target.value })}
                   rows={4}
                   className={`${field} resize-none leading-relaxed`}
                   placeholder="What stayed with you?"
                 />
               </label>
+              <p className="-mt-2 text-right text-[12px] text-fog">{form.quote.length}/600</p>
               {error && <p className="text-[13px] text-ember">{error}</p>}
               <div className="mt-1 flex justify-end gap-3">
                 <button
