@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { createThought, updateThought, getThought } from '../../lib/thoughts';
 import { categories, type Category } from '../../config/site';
+import { useIsAdmin } from '../../lib/useAdmin';
 
 const field =
   'w-full rounded-[14px] border border-cloud bg-snow px-3.5 py-2.5 text-[15px] text-obsidian outline-none transition-colors focus:border-obsidian';
 
 export default function ThoughtComposer() {
+  const isAdmin = useIsAdmin();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>(categories[0]);
   const [description, setDescription] = useState('');
@@ -44,21 +46,46 @@ export default function ThoughtComposer() {
       return;
     }
     setSaving(true);
+    setError('');
     const input = {
       title: t,
       description: description.trim() || `${b.slice(0, 140)}${b.length > 140 ? '…' : ''}`,
       category,
       body: b,
     };
-    const result = editSlug
-      ? await updateThought(editSlug, input)
-      : await createThought(input);
-    const slug = result?.slug ?? editSlug ?? '';
-    window.location.href = `/ideas/local/?slug=${encodeURIComponent(slug)}`;
+    try {
+      const result = editSlug
+        ? await updateThought(editSlug, input)
+        : await createThought(input);
+      const slug = result?.slug ?? editSlug ?? '';
+      window.location.href = `/ideas/${encodeURIComponent(slug)}/`;
+    } catch (err) {
+      setSaving(false);
+      setError(err instanceof Error ? err.message : 'Could not save. Are you signed in?');
+    }
   }
 
   if (!loaded) {
     return <p className="text-[15px] text-fog">Loading…</p>;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="card p-7 text-center sm:p-8">
+        <h1 className="text-[22px] font-semibold tracking-[-0.01em] text-obsidian">
+          Author access only
+        </h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-steel">
+          Writing thoughts is restricted to the author. Please sign in.
+        </p>
+        <a
+          href="/admin/"
+          className="mt-6 inline-flex items-center justify-center rounded-[14px] border border-[#2c2e34] bg-obsidian px-5 py-2.5 text-[15px] font-medium text-snow transition-colors hover:bg-graphite"
+        >
+          Sign in
+        </a>
+      </div>
+    );
   }
 
   return (

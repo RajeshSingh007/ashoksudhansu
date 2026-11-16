@@ -35,7 +35,7 @@ export const nav: Link[] = [
 ];
 
 export const social: Link[] = [
-  { label: 'Facebook', href: '#' }
+  { label: 'Facebook', href: 'https://www.facebook.com/' }
 ];
 
 /** Reusable primary call-to-action (contact). */

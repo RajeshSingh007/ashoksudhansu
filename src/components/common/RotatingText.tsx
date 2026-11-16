@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   words: string[];
-  class?: string;
+  className?: string;
   /** ms between swaps */
   interval?: number;
 }
 
 // Cycles through `words` with the fade/slide defined in global.css
 // (.rotating-text / .is-out). Honors prefers-reduced-motion.
-export default function RotatingText({ words, class: className = '', interval = 2200 }: Props) {
+export default function RotatingText({ words, className = '', interval = 2200 }: Props) {
   const [index, setIndex] = useState(0);
   const [out, setOut] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);

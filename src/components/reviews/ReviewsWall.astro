@@ -3,7 +3,7 @@ import { getImage as resolveImage } from 'astro:assets';
 import Section from '../common/Section.astro';
 import ReviewBoard from './ReviewBoard.tsx';
 import { getImage } from '../../lib/images';
-import { reviews, reviewsSection, featuredImage } from '../../config/reviews';
+import { reviewsSection, featuredImage } from '../../config/reviews';
 
 // Resolve the featured-slot image to an optimized URL for the island
 // (React can't use astro:assets <Image> directly).
@@ -22,5 +22,5 @@ if (meta) {
   title={reviewsSection.title}
   intro={reviewsSection.intro}
 >
-  <ReviewBoard client:visible seed={reviews} imageSrc={imageSrc} />
+  <ReviewBoard client:visible imageSrc={imageSrc} />
 </Section>

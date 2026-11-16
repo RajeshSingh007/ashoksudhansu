@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { listThoughts } from '../../lib/thoughts';
 import { formatDate } from '../../lib/format';
+import { useIsAdmin } from '../../lib/useAdmin';
+import Loader from '../common/Loader';
 import LikeButton from '../ideas/LikeButton';
 
 interface Item {
@@ -18,11 +20,13 @@ interface Props {
 }
 
 export default function FeaturedThoughts({ seed }: Props) {
+  const isAdmin = useIsAdmin();
   const [local, setLocal] = useState<Item[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const load = () =>
-      listThoughts().then((list) =>
+      listThoughts().then((list) => {
         setLocal(
           list.map((t) => ({
             slug: t.slug,
@@ -30,10 +34,11 @@ export default function FeaturedThoughts({ seed }: Props) {
             description: t.description,
             category: t.category,
             pubDate: t.pubDate,
-            href: `/ideas/local/?slug=${encodeURIComponent(t.slug)}`,
+            href: `/ideas/${encodeURIComponent(t.slug)}/`,
           })),
-        ),
-      );
+        );
+        setLoaded(true);
+      });
     load();
     // Re-read when restored from bfcache (browser back) or changed in another tab.
     const onShow = (e: PageTransitionEvent) => {
@@ -53,18 +58,26 @@ export default function FeaturedThoughts({ seed }: Props) {
 
   return (
     <ol className="flex flex-col justify-center rounded-[36px] border border-cloud bg-snow px-7 sm:px-9">
-      {featured.length === 0 ? (
+      {!loaded ? (
+        <li className="py-16">
+          <Loader label="Loading thoughts…" />
+        </li>
+      ) : featured.length === 0 ? (
         <li className="py-12 text-center">
           <p className="text-[15px] leading-relaxed text-steel">
-            The first thoughts will appear here once they’re published.
+            {isAdmin
+              ? 'No thoughts yet — write the first one.'
+              : 'New thoughts are on their way. Check back soon.'}
           </p>
-          <a
-            href="/ideas/new/"
-            className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-medium text-obsidian"
-          >
-            Write a thought
-            <span aria-hidden="true">→</span>
-          </a>
+          {isAdmin && (
+            <a
+              href="/ideas/new/"
+              className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-medium text-obsidian"
+            >
+              Write a thought
+              <span aria-hidden="true">→</span>
+            </a>
+          )}
         </li>
       ) : (
         featured.map((item, i) => (

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { listThoughts, deleteThought } from '../../lib/thoughts';
 import { formatDate } from '../../lib/format';
+import { useIsAdmin } from '../../lib/useAdmin';
+import Loader from '../common/Loader';
 import LikeButton from './LikeButton';
 
 interface Item {
@@ -10,7 +12,6 @@ interface Item {
   category: string;
   pubDate: string; // ISO
   href: string;
-  local?: boolean;
 }
 
 interface Props {
@@ -18,7 +19,15 @@ interface Props {
   seed: Item[];
 }
 
-function Card({ item, onDelete }: { item: Item; onDelete: (item: Item) => void }) {
+function Card({
+  item,
+  isAdmin,
+  onDelete,
+}: {
+  item: Item;
+  isAdmin: boolean;
+  onDelete: (item: Item) => void;
+}) {
   return (
     <div className="card relative flex flex-col overflow-hidden transition-colors">
       <LikeButton slug={item.slug} className="absolute right-4 top-4 z-10" />
@@ -42,7 +51,7 @@ function Card({ item, onDelete }: { item: Item; onDelete: (item: Item) => void }
           </span>
         </span>
       </a>
-      {item.local && (
+      {isAdmin && (
         <div className="flex items-center gap-3 border-t border-cloud px-7 py-4 text-[14px] font-medium">
           <a href={`/ideas/new/?edit=${encodeURIComponent(item.slug)}`} className="text-graphite transition-colors hover:text-obsidian">
             Edit
@@ -62,11 +71,13 @@ function Card({ item, onDelete }: { item: Item; onDelete: (item: Item) => void }
 }
 
 export default function ThoughtsGrid({ seed }: Props) {
+  const isAdmin = useIsAdmin();
   const [local, setLocal] = useState<Item[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [pending, setPending] = useState<Item | null>(null);
 
   function refresh() {
-    listThoughts().then((list) =>
+    return listThoughts().then((list) => {
       setLocal(
         list.map((t) => ({
           slug: t.slug,
@@ -74,14 +85,16 @@ export default function ThoughtsGrid({ seed }: Props) {
           description: t.description,
           category: t.category,
           pubDate: t.pubDate,
-          href: `/ideas/local/?slug=${encodeURIComponent(t.slug)}`,
-          local: true,
+          href: `/ideas/${encodeURIComponent(t.slug)}/`,
         })),
-      ),
-    );
+      );
+      setLoaded(true);
+    });
   }
 
-  useEffect(refresh, []);
+  useEffect(() => {
+    refresh();
+  }, []);
 
   // Lock scroll + Escape-to-close while the confirm dialog is open.
   useEffect(() => {
@@ -110,14 +123,27 @@ export default function ThoughtsGrid({ seed }: Props) {
 
   return (
     <>
-      {all.length === 0 ? (
+      {isAdmin && (
+        <div className="mb-8 flex justify-end">
+          <a
+            href="/ideas/new/"
+            className="inline-flex items-center gap-2 rounded-[14px] border border-[#2c2e34] bg-obsidian px-4 py-2.5 text-[15px] font-medium text-snow transition-colors hover:bg-graphite"
+          >
+            <span aria-hidden="true">+</span> Write a thought
+          </a>
+        </div>
+      )}
+
+      {!loaded ? (
+        <Loader fullscreen label="Loading thoughts…" />
+      ) : all.length === 0 ? (
         <div className="card p-12 text-center">
-          <p className="text-[16px] text-steel">No thoughts yet. Write the first one.</p>
+          <p className="text-[16px] text-steel">No thoughts yet. Check back soon.</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {all.map((item) => (
-            <Card key={item.href} item={item} onDelete={setPending} />
+            <Card key={item.href} item={item} isAdmin={isAdmin} onDelete={setPending} />
           ))}
         </div>
       )}

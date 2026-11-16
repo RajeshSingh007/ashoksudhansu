@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
         <h2
           class="mt-3 max-w-md text-[26px] font-semibold leading-[1.2] tracking-[-0.02em] text-obsidian sm:text-[30px]"
         >
-          Have an idea worth carrying forward, or need help resolving a conflict?
+          Have an idea worth carrying forward, or looking for the right direction from someone who understands <span class="underline decoration-ember decoration-2 underline-offset-[4px]">YOUR</span> Problem.
         </h2>
         <a
           href={contactCta.href}
@@ -67,7 +67,11 @@ const year = new Date().getFullYear();
         class="flex flex-col gap-2 py-6 text-[13px] text-fog sm:flex-row sm:items-center sm:justify-between"
       >
         <p>© {year} {site.fullName}. All rights reserved.</p>
-        <p>{site.role}</p>
+        <div class="flex items-center gap-3">
+          <span>{site.role}</span>
+          <span aria-hidden="true">·</span>
+          <a href="/admin/" class="transition-colors hover:text-obsidian">Author</a>
+        </div>
       </div>
     </Container>
   </div>

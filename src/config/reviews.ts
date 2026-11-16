@@ -3,10 +3,8 @@
 //
 // No seed reviews ship from config now — the featured slot shows `featuredImage`
 // on its own until visitors add reviews. Once they do, the first review fills
-// the featured (image) card and the rest flow to the right. Reviews are added
-// through the "Add your review" modal and persist in the visitor's browser
-// (localStorage) — see components/reviews/ReviewBoard.tsx. When a real backend
-// lands, replace localStorage with a DB query + moderation.
+// the featured (image) card and the rest flow into the carousel. Reviews live
+// in Supabase: anyone can post + read; only the author can delete.
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface Review {

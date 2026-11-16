@@ -62,7 +62,7 @@ export const wisdom: Wisdom[] = [
   },
   { quote: 'Arise, awake, and stop not till the goal is reached.', author: 'Swami Vivekananda' },
   {
-    quote: 'We are what our thoughts have made us; so take care about what you think.',
+    quote: 'We are what our thoughts have made us, so take care about what you think.',
     author: 'Swami Vivekananda',
   },
   {
@@ -136,7 +136,7 @@ export const duality = {
       alt: 'Deep in thought, facing the other way',
       mirror: true,
       eyebrow: 'The humanist',
-      title: 'Dialogue over discord',
+      title: 'Respectful & Inspiring',
       body: 'Whether in a classroom or across a kitchen table, he helps people find their way through conflict — not by winning arguments, but by restoring the conditions for an honest conversation.',
     },
   ] satisfies Facet[],
