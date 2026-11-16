@@ -1,20 +1,18 @@
 // ──────────────────────────────────────────────────────────────────────────
 // Reviews / testimonials wall.
 //
-// One seed review (Anita Rao) ships from config and always renders. Everything
-// else is added by visitors through the "Add your review" modal and persists in
-// their browser (localStorage) — see components/reviews/ReviewBoard.tsx. When a
-// real backend lands, replace localStorage with a DB query + moderation.
+// No seed reviews ship from config now — the featured slot shows `featuredImage`
+// on its own until visitors add reviews. Once they do, the first review fills
+// the featured (image) card and the rest flow to the right. Reviews are added
+// through the "Add your review" modal and persist in the visitor's browser
+// (localStorage) — see components/reviews/ReviewBoard.tsx. When a real backend
+// lands, replace localStorage with a DB query + moderation.
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface Review {
   name: string;
   role: string;
   quote: string;
-  /** Marks the one image-led featured review. */
-  featured?: boolean;
-  /** Hero image filename in src/assets/images (featured review only). */
-  image?: string;
 }
 
 export const reviewsSection = {
@@ -23,13 +21,7 @@ export const reviewsSection = {
   intro: '',
 };
 
-export const reviews: Review[] = [
-  {
-    name: 'Anita Rao',
-    role: 'NGO Director, Pune',
-    quote:
-      'What stays with you is the warmth. He treats a farmer and a secretary with exactly the same attention — and that is why both trust him.',
-    featured: true,
-    image: 'garden-feeding.jpg',
-  },
-];
+/** Image shown in the featured slot (filename in src/assets/images). */
+export const featuredImage = 'garden-feeding.jpg';
+
+export const reviews: Review[] = [];

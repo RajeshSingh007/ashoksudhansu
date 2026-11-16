@@ -7,18 +7,11 @@ interface Review {
   quote: string;
 }
 
-interface Featured {
-  name: string;
-  role: string;
-  quote: string;
-  imageSrc: string;
-}
-
 interface Props {
-  /** Reviews that always show, rendered server-side from config. */
+  /** Config reviews that always show (currently none). */
   seed: Review[];
-  /** The one image-led review (resolved src passed from the .astro side). */
-  featured?: Featured | null;
+  /** The image used for the featured slot (resolved src from the .astro side). */
+  imageSrc?: string;
 }
 
 const STORAGE_KEY = 'ashok:reviews';
@@ -37,56 +30,71 @@ function initials(name: string): string {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="card p-6">
-      <figure>
-        <div className="flex items-center gap-3">
-          <span
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-obsidian text-[14px] font-semibold text-snow"
-            aria-hidden="true"
-          >
-            {initials(review.name)}
-          </span>
-          <figcaption>
-            <p className="text-[15px] font-semibold text-obsidian">{review.name}</p>
-            {review.role && <p className="text-[13px] text-steel">{review.role}</p>}
-          </figcaption>
+    <div className="card flex h-full min-h-[240px] flex-col p-7">
+      <span className="text-[44px] font-semibold leading-[0.6] text-ember" aria-hidden="true">
+        “
+      </span>
+      <blockquote className="mt-4 flex-1 text-[17px] leading-relaxed text-graphite">
+        {review.quote}
+      </blockquote>
+      <div className="mt-6 flex items-center gap-3">
+        <span
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-obsidian text-[14px] font-semibold text-snow"
+          aria-hidden="true"
+        >
+          {initials(review.name)}
+        </span>
+        <div>
+          <p className="text-[15px] font-semibold text-obsidian">{review.name}</p>
+          {review.role && <p className="text-[13px] text-steel">{review.role}</p>}
         </div>
-        <blockquote className="mt-4 text-[15px] leading-relaxed text-graphite">
-          {review.quote}
-        </blockquote>
-      </figure>
+      </div>
     </div>
   );
 }
 
 const EMPTY = { name: '', role: '', quote: '' };
 
-function FeaturedCard({ review }: { review: Featured }) {
+// The featured slot: always the picture. Once a review exists, the first one
+// fills it (name over the image, quote below); otherwise it's just the picture.
+function FeaturedCard({ imageSrc, review }: { imageSrc?: string; review?: Review }) {
   return (
     <div className="card overflow-hidden">
       <figure>
-        <div className="relative">
-          <img
-            src={review.imageSrc}
-            alt={review.name}
-            className="aspect-[4/5] w-full object-cover object-[50%_30%]"
-          />
-          <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-obsidian/90 to-transparent p-6 pt-14">
-            <p className="text-[16px] font-semibold text-white">{review.name}</p>
-            <p className="text-[13px] text-white/80">{review.role}</p>
-          </figcaption>
-        </div>
-        <blockquote className="p-6 text-[16px] leading-relaxed text-graphite">
-          <span className="text-ember">“</span>
-          {review.quote}
-          <span className="text-ember">”</span>
-        </blockquote>
+        {imageSrc && (
+          <div className="relative">
+            <img
+              src={imageSrc}
+              alt={review?.name ?? ''}
+              className="aspect-[4/5] w-full object-cover object-[50%_30%]"
+            />
+            {review && (
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-obsidian/90 to-transparent p-6 pt-14">
+                <p className="text-[16px] font-semibold text-white">{review.name}</p>
+                {review.role && <p className="text-[13px] text-white/80">{review.role}</p>}
+              </figcaption>
+            )}
+          </div>
+        )}
+        {review ? (
+          <blockquote className="p-6 text-[16px] leading-relaxed text-graphite">
+            <span className="text-ember">“</span>
+            {review.quote}
+            <span className="text-ember">”</span>
+          </blockquote>
+        ) : (
+          <div className="p-6">
+            <p className="text-[15px] leading-relaxed text-steel">
+              The first review will appear here.
+            </p>
+          </div>
+        )}
       </figure>
     </div>
   );
 }
 
-export default function ReviewBoard({ seed, featured }: Props) {
+export default function ReviewBoard({ seed, imageSrc }: Props) {
   const [userReviews, setUserReviews] = useState<Review[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -145,16 +153,24 @@ export default function ReviewBoard({ seed, featured }: Props) {
   }
 
   const all = [...seed, ...userReviews];
+  const featuredReview = all[0];
+  const rest = all.slice(1);
   const field =
     'rounded-[14px] border border-cloud bg-snow px-3.5 py-2.5 text-[15px] text-obsidian outline-none transition-colors focus:border-obsidian';
 
   return (
     <div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:items-start">
-        {featured && <FeaturedCard review={featured} />}
-        {all.map((r, i) => (
-          <ReviewCard key={i} review={r} />
-        ))}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-stretch">
+        <FeaturedCard imageSrc={imageSrc} review={featuredReview} />
+        {rest.length > 0 && (
+          <div className="flex h-full snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:thin]">
+            {rest.map((r, i) => (
+              <div key={i} className="w-[300px] shrink-0 snap-start sm:w-[320px]">
+                <ReviewCard review={r} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-12 flex flex-col items-center gap-3 text-center">
