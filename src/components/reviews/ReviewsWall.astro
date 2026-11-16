@@ -1,0 +1,35 @@
+---
+import { getImage as resolveImage } from 'astro:assets';
+import Section from '../common/Section.astro';
+import ReviewBoard from './ReviewBoard.tsx';
+import { getImage } from '../../lib/images';
+import { reviews, reviewsSection } from '../../config/reviews';
+
+const featuredReview = reviews.find((r) => r.featured);
+const rest = reviews.filter((r) => !r.featured);
+
+// Resolve the featured review's image to an optimized URL to hand to the island
+// (React can't use astro:assets <Image> directly).
+let featured = null;
+if (featuredReview?.image) {
+  const meta = getImage(featuredReview.image);
+  if (meta) {
+    const optimized = await resolveImage({ src: meta, width: 800 });
+    featured = {
+      name: featuredReview.name,
+      role: featuredReview.role,
+      quote: featuredReview.quote,
+      imageSrc: optimized.src,
+    };
+  }
+}
+---
+
+<Section
+  id="reviews"
+  eyebrow={reviewsSection.eyebrow}
+  title={reviewsSection.title}
+  intro={reviewsSection.intro}
+>
+  <ReviewBoard client:visible seed={rest} featured={featured} />
+</Section>

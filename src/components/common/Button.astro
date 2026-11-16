@@ -1,0 +1,51 @@
+---
+// Button / link — the one button in the system (Awesomic spec).
+//  primary: #09090b fill (the key CTA) · neutral: light hairline
+//  ghost:   outlined on light · inverse: outlined white on dark
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'neutral' | 'ghost' | 'inverse';
+  size?: 'md' | 'lg';
+  class?: string;
+  type?: 'button' | 'submit';
+  rounded?: 'button' | 'pill';
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  class: className = '',
+  type = 'button',
+  rounded = 'button',
+} = Astro.props;
+
+const radius = rounded === 'pill' ? 'rounded-full' : 'rounded-[14px]';
+const base = `inline-flex items-center justify-center gap-2 ${radius} font-medium transition-colors duration-200 whitespace-nowrap`;
+
+const sizes: Record<string, string> = {
+  md: 'text-[15px] px-4 py-2.5',
+  lg: 'text-[16px] px-6 py-3.5',
+};
+
+const variants: Record<string, string> = {
+  primary: 'bg-obsidian text-snow border border-[#2c2e34] hover:bg-graphite',
+  neutral: 'bg-snow text-graphite border border-cloud hover:border-mist',
+  ghost: 'bg-transparent text-graphite border border-iron hover:bg-snow',
+  inverse: 'bg-transparent text-white border border-white/60 hover:bg-white/10',
+};
+
+const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+---
+
+{
+  href ? (
+    <a href={href} class={cls}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={cls}>
+      <slot />
+    </button>
+  )
+}

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Panel from '../components/common/Panel.astro';
+import Hero from '../components/home/Hero.astro';
+import DualityIntro from '../components/home/DualityIntro.astro';
+import FeaturedEssays from '../components/home/FeaturedEssays.astro';
+import ReviewsWall from '../components/reviews/ReviewsWall.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout
+  title={`${site.fullName} — Thinker & Mediator`}
+  description={site.description}
+  overlayHeader
+>
+  <Hero />
+
+  <Panel surface="snow"><DualityIntro /></Panel>
+  <Panel surface="sage"><FeaturedEssays /></Panel>
+
+  <Panel surface="sand"><ReviewsWall /></Panel>
+</BaseLayout>

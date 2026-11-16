@@ -1,0 +1,38 @@
+---
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+const {
+  eyebrow,
+  title,
+  intro,
+  align = 'left',
+  tone = 'light',
+  class: className = '',
+} = Astro.props;
+
+const alignCls = align === 'center' ? 'text-center mx-auto max-w-2xl' : 'max-w-2xl';
+const titleColor = tone === 'dark' ? 'text-snow' : 'text-obsidian';
+const introColor = tone === 'dark' ? 'text-mist' : 'text-steel';
+const eyebrowColor = tone === 'dark' ? 'text-ash' : '';
+---
+
+<div class={`${alignCls} ${className}`}>
+  {eyebrow && <Eyebrow class={eyebrowColor}>{eyebrow}</Eyebrow>}
+  <h2
+    class:list={[
+      'mt-3 text-[30px] font-semibold leading-[1.15] tracking-[-0.02em] sm:text-[40px]',
+      titleColor,
+    ]}
+  >
+    {title}
+  </h2>
+  {intro && <p class:list={['mt-4 text-[18px] leading-relaxed', introColor]}>{intro}</p>}
+</div>

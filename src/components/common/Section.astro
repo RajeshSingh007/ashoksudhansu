@@ -1,0 +1,49 @@
+---
+// Generic page section: consistent vertical rhythm + Container + optional
+// heading. Use `headless` layouts by omitting title and putting custom markup
+// (e.g. a heading with a side button) in the default slot.
+import Container from './Container.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  align?: 'left' | 'center';
+  /** Vertical padding preset. */
+  space?: 'default' | 'tight' | 'none';
+  class?: string;
+  headingClass?: string;
+}
+const {
+  id,
+  eyebrow,
+  title,
+  intro,
+  align = 'left',
+  space = 'default',
+  class: className = '',
+  headingClass = 'mb-12',
+} = Astro.props;
+
+const spacing =
+  space === 'none' ? '' : space === 'tight' ? 'py-8 sm:py-10' : 'py-16 sm:py-20';
+---
+
+<section id={id} class:list={[spacing, className]}>
+  <Container>
+    {
+      title && (
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={title}
+          intro={intro}
+          align={align}
+          class={headingClass}
+        />
+      )
+    }
+    <slot />
+  </Container>
+</section>

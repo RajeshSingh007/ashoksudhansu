@@ -1,0 +1,18 @@
+---
+// Big-number metric (Awesomic stats block). tone switches for dark surfaces.
+interface Props {
+  value: string;
+  label: string;
+  tone?: 'light' | 'dark';
+}
+const { value, label, tone = 'light' } = Astro.props;
+const valueColor = tone === 'dark' ? 'text-snow' : 'text-obsidian';
+const labelColor = tone === 'dark' ? 'text-mist' : 'text-steel';
+---
+
+<div>
+  <dt class:list={['text-[28px] font-semibold tracking-[-0.02em] sm:text-[36px]', valueColor]}>
+    {value}
+  </dt>
+  <dd class:list={['mt-1 text-[13px] leading-snug', labelColor]}>{label}</dd>
+</div>

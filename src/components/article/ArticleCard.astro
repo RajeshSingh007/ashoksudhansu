@@ -1,0 +1,29 @@
+---
+import Card from '../common/Card.astro';
+import Tag from '../common/Tag.astro';
+import { formatDate } from '../../lib/posts';
+import type { Idea } from '../../lib/posts';
+
+interface Props {
+  entry: Idea;
+}
+const { entry } = Astro.props;
+const { title, description, category, pubDate } = entry.data;
+---
+
+<Card href={`/ideas/${entry.id}/`} class="group flex flex-col overflow-hidden transition-colors hover:border-mist">
+  <div class="flex flex-1 flex-col p-7">
+    <div class="flex items-center gap-3 text-[12px]">
+      <Tag>{category}</Tag>
+      <time datetime={pubDate.toISOString()} class="text-fog">{formatDate(pubDate)}</time>
+    </div>
+    <h3 class="mt-4 text-[20px] font-semibold leading-snug tracking-[-0.01em] text-obsidian">
+      {title}
+    </h3>
+    <p class="mt-2 line-clamp-3 text-[15px] leading-relaxed text-steel">{description}</p>
+    <span class="mt-5 inline-flex items-center gap-1.5 text-[14px] font-medium text-obsidian">
+      Read thought
+      <span class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span>
+    </span>
+  </div>
+</Card>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/common/Container.astro';
+import ThoughtsGrid from '../../components/ideas/ThoughtsGrid.tsx';
+import { getPublishedIdeas } from '../../lib/posts';
+
+const seed = (await getPublishedIdeas()).map((e) => ({
+  slug: e.id,
+  title: e.data.title,
+  description: e.data.description,
+  category: e.data.category,
+  pubDate: e.data.pubDate.toISOString(),
+  href: `/ideas/${e.id}/`,
+}));
+---
+
+<BaseLayout
+  title="Ideas — Thoughts on welfare, governance & dialogue"
+  description="Long-form thinking on public welfare, governance and the art of difficult conversations."
+>
+  <Container class="pt-16 pb-24 sm:pt-20 sm:pb-28">
+    <div class="mb-10 flex items-center justify-between gap-4">
+      <h1 class="text-[30px] font-semibold tracking-[-0.02em] text-obsidian sm:text-[40px]">
+        Thoughts
+      </h1>
+      <a
+        href="/ideas/new/"
+        class="inline-flex shrink-0 items-center gap-2 rounded-[14px] border border-[#2c2e34] bg-obsidian px-4 py-2.5 text-[15px] font-medium text-snow transition-colors hover:bg-graphite"
+      >
+        <span aria-hidden="true">+</span> Write a thought
+      </a>
+    </div>
+    <ThoughtsGrid client:load seed={seed} />
+  </Container>
+</BaseLayout>

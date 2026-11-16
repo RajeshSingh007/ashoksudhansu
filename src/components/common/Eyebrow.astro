@@ -1,0 +1,10 @@
+---
+// Small uppercase label used above section titles across the whole site.
+interface Props {
+  class?: string;
+  // Render light (on dark surfaces) by overriding the color via class.
+}
+const { class: className = '' } = Astro.props;
+---
+
+<p class={`eyebrow ${className}`}><slot /></p>

@@ -1,0 +1,26 @@
+---
+// Brand logo: a geometric "A" in a hairline squircle crowned by an ember spark
+// (an idea taking light), with a two-tone wordmark. Colour is inherited
+// (currentColor), so it adapts to the dark hero bar and the light bar alike.
+import { site } from '../../config/site';
+
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href = '/', class: className = '' } = Astro.props;
+
+const [first, ...rest] = site.fullName.split(' ');
+const last = rest.join(' ');
+---
+
+<a
+  href={href}
+  class={`flex items-center gap-2.5 ${className}`}
+  aria-label={`${site.fullName} — home`}
+>
+  <span class="logo-badge" aria-hidden="true">A<span class="logo-badge-s">S</span></span>
+  <span class="text-[18px] font-semibold leading-none tracking-[-0.01em]">
+    {first}{last && <span class="font-normal opacity-70"> {last}</span>}
+  </span>
+</a>

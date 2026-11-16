@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/common/Container.astro';
+import ThoughtComposer from '../../components/ideas/ThoughtComposer.tsx';
+---
+
+<BaseLayout title="Write a thought" description="Compose a new thought.">
+  <Container class="pt-16 pb-24 sm:pt-20 sm:pb-28">
+    <div class="mx-auto max-w-2xl">
+      <a
+        href="/ideas/"
+        class="inline-flex items-center gap-1.5 text-[14px] text-steel transition-colors hover:text-obsidian"
+      >
+        <span aria-hidden="true">←</span> All thoughts
+      </a>
+      <div class="mt-6">
+        <ThoughtComposer client:load />
+      </div>
+    </div>
+  </Container>
+</BaseLayout>

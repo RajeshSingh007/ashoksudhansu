@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import Section from '../common/Section.astro';
+import Card from '../common/Card.astro';
+import Eyebrow from '../common/Eyebrow.astro';
+import { getImage } from '../../lib/images';
+import { duality } from '../../config/home';
+
+const [thinker, humanist] = duality.facets;
+const img = getImage(thinker.image);
+
+// Split the title into its two "sides" and peel off the final word of each
+// (mind / heart) so we can accent the two facets of his character.
+const sides = duality.title.split(', ');
+const splitLast = (s: string): [string, string] => {
+  const i = s.lastIndexOf(' ');
+  return i === -1 ? ['', s] : [s.slice(0, i), s.slice(i + 1)];
+};
+---
+
+<Section space="default">
+  <div class="mb-12 max-w-2xl">
+    <Eyebrow>{duality.eyebrow}</Eyebrow>
+    <h2 class="mt-3 text-[30px] font-semibold leading-[1.15] tracking-[-0.02em] text-obsidian sm:text-[40px]">
+      {
+        sides.map((side, i) => {
+          const [pre, word] = splitLast(side);
+          return (
+            <span class="block">
+              {pre}{' '}
+              <span class="italic underline decoration-ember decoration-2 underline-offset-[6px]">
+                {word}
+              </span>
+              {i < sides.length - 1 ? ',' : ''}
+            </span>
+          );
+        })
+      }
+    </h2>
+    <p class="mt-4 text-[18px] leading-relaxed text-steel">{duality.intro}</p>
+  </div>
+
+  <Card class="relative overflow-hidden">
+    {/* The meeting line — a soft shaft of light down the axis where his two
+        selves mirror and meet. Carries the "two sides, one purpose" idea
+        without decoration-for-its-own-sake. On desktop it runs the full card
+        (the two readings sit side by side); on mobile the readings stack, so
+        the line is scoped to the image only (see below). */}
+    <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-1/2 z-20 hidden -translate-x-1/2 sm:block">
+      <div class="absolute inset-y-0 left-1/2 w-20 -translate-x-1/2 bg-ember/12 blur-2xl"></div>
+      <div class="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-ember/60 to-transparent"></div>
+    </div>
+
+    {/* One portrait, mirrored at the seam — the two sides of him facing each other. */}
+    <div class="relative grid grid-cols-2">
+      {img && (
+        <>
+          <div class="aspect-[16/11] overflow-hidden">
+            <Image
+              src={img}
+              alt={thinker.alt}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 768px) 420px, 50vw"
+              class="h-full w-full object-cover object-center"
+            />
+          </div>
+          <div class="aspect-[16/11] overflow-hidden">
+            <Image
+              src={img}
+              alt={humanist.alt}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 768px) 420px, 50vw"
+              class="h-full w-full -scale-x-100 object-cover object-center"
+            />
+          </div>
+        </>
+      )}
+      {/* Mobile: line scoped to the image only (readings stack below). */}
+      <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-1/2 z-20 -translate-x-1/2 sm:hidden">
+        <div class="absolute inset-y-0 left-1/2 w-16 -translate-x-1/2 bg-ember/12 blur-2xl"></div>
+        <div class="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-ember/60 to-transparent"></div>
+      </div>
+      {/* The glowing node where the two halves meet. */}
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute bottom-0 left-1/2 z-30 h-2.5 w-2.5 -translate-x-1/2 translate-y-1/2 rounded-full bg-ember shadow-[0_0_24px_6px_rgba(255,90,0,0.45)]"
+      >
+      </div>
+    </div>
+
+    {/* Two readings of the same person, linked across the seam. */}
+    <div class="relative grid sm:grid-cols-2">
+      {/* Hairline tying THE THINKER ↔ THE HUMANIST across the meeting line. */}
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute left-1/2 top-8 z-20 hidden h-px w-14 -translate-x-1/2 bg-ember/35 sm:block"
+      >
+      </div>
+      <div class="p-7 sm:p-8">
+        <Eyebrow>{thinker.eyebrow}</Eyebrow>
+        <h3 class="mt-2 text-[22px] font-semibold tracking-[-0.01em] text-obsidian">
+          {thinker.title}
+        </h3>
+        <p class="mt-3 text-[15px] leading-relaxed text-steel">{thinker.body}</p>
+      </div>
+      <div class="border-t border-cloud p-7 sm:border-l sm:border-t-0 sm:p-8">
+        <Eyebrow>{humanist.eyebrow}</Eyebrow>
+        <h3 class="mt-2 text-[22px] font-semibold tracking-[-0.01em] text-obsidian">
+          {humanist.title}
+        </h3>
+        <p class="mt-3 text-[15px] leading-relaxed text-steel">{humanist.body}</p>
+      </div>
+    </div>
+  </Card>
+</Section>

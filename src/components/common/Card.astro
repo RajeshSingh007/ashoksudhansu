@@ -1,0 +1,22 @@
+---
+// Hairline card surface (Awesomic: 36px radius, 1px #ececee border, no shadow).
+// Polymorphic: renders an <a> when `href` is set, otherwise a <div>.
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href, class: className = '' } = Astro.props;
+const cls = `card ${className}`;
+---
+
+{
+  href ? (
+    <a href={href} class={cls}>
+      <slot />
+    </a>
+  ) : (
+    <div class={cls}>
+      <slot />
+    </div>
+  )
+}

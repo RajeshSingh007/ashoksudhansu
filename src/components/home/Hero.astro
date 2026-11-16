@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+import Container from '../common/Container.astro';
+import Button from '../common/Button.astro';
+import RotatingText from '../common/RotatingText.tsx';
+import WisdomQuote from './WisdomQuote.tsx';
+import { getImage } from '../../lib/images';
+import { hero, heroTrust } from '../../config/home';
+
+const img = getImage(hero.image);
+---
+
+<section class="relative">
+  <div class="relative h-dvh w-full overflow-hidden">
+    {
+      img && (
+        <Image
+          src={img}
+          alt={hero.alt}
+          widths={[768, 1200, 1600, 2000]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="hero-kenburns absolute inset-0 h-full w-full object-cover object-[50%_22%]"
+        />
+      )
+    }
+    <!-- Top scrim keeps the floating nav legible over bright areas -->
+    <div class="hero-scrim-top"></div>
+    <!-- Bottom scrim grounds the name + CTAs without dulling the whole image -->
+    <div class="hero-scrim-bottom"></div>
+
+    <Container class="relative flex h-full flex-col justify-end pb-16 sm:pb-24">
+      <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-2xl">
+          <span
+            class="hero-rise hero-rise-1 inline-block rounded-[12px] bg-ember px-2.5 py-1 text-[12px] font-medium uppercase tracking-[0.14em] text-white"
+          >
+            {hero.credentials}
+          </span>
+          <h1
+            class="hero-rise hero-rise-2 mt-5 text-[40px] font-semibold leading-[1.05] tracking-[-0.03em] text-white sm:text-[56px] lg:text-[72px]"
+          >
+            {hero.name}
+          </h1>
+          <p class="hero-rise hero-rise-4 mt-4 text-[22px] font-medium text-white sm:text-[30px]">
+            A <RotatingText
+              client:visible
+              words={hero.roles}
+              class="font-semibold underline decoration-ember decoration-2 underline-offset-[6px]"
+            />.
+          </p>
+          <div class="hero-rise hero-rise-5 mt-8 flex flex-wrap gap-3">
+            <Button href={hero.primaryCta.href} variant="primary" size="lg">
+              {hero.primaryCta.label}
+            </Button>
+            <Button href={hero.secondaryCta.href} variant="inverse" size="lg">
+              {hero.secondaryCta.label}
+            </Button>
+          </div>
+          <ul class="hero-trust hero-rise hero-rise-6">
+            {heroTrust.map((item) => <li class="hero-trust__item">{item}</li>)}
+          </ul>
+        </div>
+
+        <div class="hero-rise hero-rise-6 w-full border-t border-white/15 pt-6 lg:w-80 lg:shrink-0 lg:border-t-0 lg:pt-0">
+          <WisdomQuote client:visible />
+        </div>
+      </div>
+    </Container>
+
+    <div class="hero-scrollcue" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+</section>

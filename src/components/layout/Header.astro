@@ -1,0 +1,90 @@
+---
+import Logo from '../common/Logo.astro';
+import MobileNav from './MobileNav.tsx';
+import { nav, contactCta } from '../../config/site';
+
+interface Props {
+  /** Transparent, light-text nav that floats over a hero image (homepage). */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : href.startsWith('/') && path.startsWith(href);
+---
+
+<header
+  id="site-header"
+  class:list={[
+    'z-50',
+    overlay ? 'fixed inset-x-0 top-0 header--overlay' : 'sticky top-0',
+  ]}
+>
+  <div class="hdr-inner">
+    <div class="navbar-bar relative flex h-[58px] items-center justify-between rounded-[16px] pl-4 pr-2.5">
+      <Logo class="hdr-logo" />
+
+      <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex" aria-label="Primary">
+        {
+          nav.map((item) => (
+            <a href={item.href} class="hdr-link text-[15px]" data-active={isActive(item.href)}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a
+          href={contactCta.href}
+          class="hdr-cta hidden items-center rounded-full px-4 py-2 text-[14px] font-medium md:inline-flex"
+        >
+          {contactCta.label}
+        </a>
+        <MobileNav client:load navItems={nav} cta={contactCta} />
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Scrollspy: highlight the nav link for the on-page section in view
+    // (e.g. "Reviews" -> #reviews). Only on pages that have those sections.
+    const links = Array.from(header.querySelectorAll('.hdr-link'));
+    const homeLink = links.find((a) => a.getAttribute('href') === '/');
+    const sections = links
+      .map((a) => {
+        const href = a.getAttribute('href') || '';
+        const id = href.includes('#') ? href.split('#')[1] : '';
+        const el = id ? document.getElementById(id) : null;
+        return el ? { a, el } : null;
+      })
+      .filter(Boolean);
+
+    if (homeLink && sections.length) {
+      const setActive = (link) =>
+        links.forEach((a) => a.setAttribute('data-active', String(a === link)));
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const match = sections.find((s) => s.el === entry.target);
+            if (!match) return;
+            if (entry.isIntersecting) setActive(match.a);
+            else if (match.a.getAttribute('data-active') === 'true') setActive(homeLink);
+          });
+        },
+        { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+      );
+      sections.forEach((s) => io.observe(s.el));
+    }
+  })();
+</script>

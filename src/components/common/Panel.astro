@@ -1,0 +1,23 @@
+---
+// A stacked section panel: a coloured surface with a large rounded top that
+// overlaps the section above it. Wrap homepage sections to get the layered,
+// multi-surface look. All panels overlap (including the first, over the hero).
+interface Props {
+  surface?: 'snow' | 'paper' | 'sand' | 'sage' | 'dark';
+  id?: string;
+  class?: string;
+}
+const { surface = 'snow', id, class: className = '' } = Astro.props;
+
+const surfaces: Record<string, string> = {
+  snow: 'bg-snow',
+  paper: 'bg-paper',
+  sand: 'bg-sand',
+  sage: 'bg-sage',
+  dark: 'bg-obsidian text-snow',
+};
+---
+
+<div id={id} class:list={['panel panel--stacked', surfaces[surface], className]}>
+  <slot />
+</div>

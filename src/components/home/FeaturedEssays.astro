@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import Section from '../common/Section.astro';
+import Button from '../common/Button.astro';
+import FeaturedThoughts from './FeaturedThoughts.tsx';
+import { getImage } from '../../lib/images';
+import { getPublishedIdeas } from '../../lib/posts';
+
+const cover = getImage('green-mountain.jpg');
+
+// Build-time thoughts (may be empty); the island merges these with any the
+// author has written in the browser and shows the two newest.
+const seed = (await getPublishedIdeas()).map((e) => ({
+  slug: e.id,
+  title: e.data.title,
+  description: e.data.description,
+  category: e.data.category,
+  pubDate: e.data.pubDate.toISOString(),
+  href: `/ideas/${e.id}/`,
+}));
+---
+
+<Section space="none" class="pt-8 pb-18 sm:pt-10 sm:pb-22">
+  <h2 class="mb-6 text-[30px] font-semibold tracking-[-0.02em] text-obsidian sm:text-[40px]">
+    Thoughts
+  </h2>
+  <div class="grid items-stretch gap-6 lg:grid-cols-[1.05fr_1fr]">
+    {/* Visual anchor — a single image carries the whole section heading. */}
+    <div class="relative isolate flex min-h-[380px] flex-col justify-end overflow-hidden rounded-[36px] p-8 sm:p-10">
+      {cover && (
+        <Image
+          src={cover}
+          alt=""
+          widths={[600, 900, 1200]}
+          sizes="(min-width: 1024px) 560px, 100vw"
+          class="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      )}
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-obsidian via-obsidian/70 to-obsidian/20" />
+      <p class="eyebrow flex items-center gap-2.5 text-white">
+        <span class="h-px w-7 bg-ember" aria-hidden="true"></span>
+        Vision
+      </p>
+      <h2 class="mt-4 max-w-[16ch] text-[32px] font-semibold leading-[1.12] tracking-[-0.01em] text-white sm:text-[40px]">
+        One mind, thinking out loud about the questions{' '}
+        <span class="underline decoration-ember decoration-2 underline-offset-[6px]">
+          we all
+        </span>{' '}
+        live with
+      </h2>
+      <div class="mt-7">
+        <Button href="/ideas" variant="inverse" rounded="pill">
+          All thoughts →
+        </Button>
+      </div>
+    </div>
+
+    {/* The two newest thoughts — merged from config + browser-authored. */}
+    <FeaturedThoughts client:load seed={seed} />
+  </div>
+</Section>

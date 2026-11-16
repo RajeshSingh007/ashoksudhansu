@@ -1,0 +1,58 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Container from '../components/common/Container.astro';
+import Tag from '../components/common/Tag.astro';
+import { formatDate } from '../lib/posts';
+import type { Idea } from '../lib/posts';
+
+interface Props {
+  entry: Idea;
+  minutes: number;
+}
+const { entry, minutes } = Astro.props;
+const { title, description, category, pubDate, updatedDate } = entry.data;
+---
+
+<BaseLayout title={`${title} — Thoughts`} description={description}>
+  <article>
+    <Container class="pt-14 sm:pt-20">
+      <div class="mx-auto max-w-3xl">
+        <a
+          href="/ideas"
+          class="inline-flex items-center gap-1.5 text-[14px] text-steel transition-colors hover:text-obsidian"
+        >
+          <span aria-hidden="true">←</span> All thoughts
+        </a>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <Tag>{category}</Tag>
+          <span class="text-[13px] text-fog">
+            <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+            {' · '}{minutes} min read
+          </span>
+        </div>
+
+        <h1
+          class="mt-5 text-[34px] font-semibold leading-[1.1] tracking-[-0.03em] text-obsidian sm:text-[48px]"
+        >
+          {title}
+        </h1>
+        <p class="mt-5 text-[19px] leading-relaxed text-steel">{description}</p>
+      </div>
+    </Container>
+
+    <Container class="mt-12 pb-24 sm:mt-16 sm:pb-28">
+      <div class="prose mx-auto max-w-3xl pb-4">
+        <slot />
+      </div>
+
+      {
+        updatedDate && (
+          <p class="mx-auto mt-10 max-w-3xl text-[13px] text-fog">
+            Last updated {formatDate(updatedDate)}
+          </p>
+        )
+      }
+    </Container>
+  </article>
+</BaseLayout>

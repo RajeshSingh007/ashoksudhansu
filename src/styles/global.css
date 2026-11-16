@@ -1,0 +1,520 @@
+@import "tailwindcss";
+@import "@fontsource-variable/dm-sans";
+
+/* ------------------------------------------------------------------ */
+/* Awesomic design tokens (see Theme/Awesomic/DESIGN.md)              */
+/* Editorial zinc grid, hairline borders, single ember accent.        */
+/* Cosmica is substituted with DM Sans (self-hosted variable).        */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Colors */
+  --color-obsidian: #09090b;
+  --color-graphite: #18181b;
+  --color-slate: #27272a;
+  --color-iron: #3f3f46;
+  --color-steel: #52525b;
+  --color-fog: #71717a;
+  --color-ash: #a1a1aa;
+  --color-mist: #d4d4d8;
+  --color-cloud: #ececee;
+  --color-paper: #f4f4f5;
+  --color-snow: #ffffff;
+  --color-ember: #ff5a00;
+
+  /* Soft section surfaces (subtle tints for the stacked panels) */
+  --color-sand: #f0e9dd;
+  --color-sage: #e9eee7;
+
+  /* Type family (Cosmica -> DM Sans) */
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Named radii from the spec */
+  --radius-badge: 12px;
+  --radius-input: 14px;
+  --radius-button: 14px;
+  --radius-card: 36px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                               */
+/* ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-graphite);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-obsidian);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-obsidian);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reusable primitives (kept here so the class strings live in one     */
+/* place; the common/ components reference these).                     */
+/* ------------------------------------------------------------------ */
+.eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-ember);
+}
+.card {
+  border-radius: 36px;
+  border: 1px solid var(--color-cloud);
+  background: var(--color-snow);
+}
+.tag {
+  display: inline-block;
+  border-radius: 12px;
+  border: 1px solid var(--color-cloud);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-graphite);
+}
+
+/* Stacked section panels — each panel curves over the previous one with a
+   large rounded top, so differently-coloured sections read as layered cards. */
+.panel {
+  position: relative;
+}
+.panel--stacked {
+  border-top-left-radius: 44px;
+  border-top-right-radius: 44px;
+  margin-top: -44px;
+}
+@media (min-width: 640px) {
+  .panel--stacked {
+    border-top-left-radius: 56px;
+    border-top-right-radius: 56px;
+    margin-top: -56px;
+  }
+}
+
+/* Rotating word (hero identity) */
+.rotating-text {
+  display: inline-block;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  will-change: opacity, transform;
+}
+.rotating-text.is-out {
+  opacity: 0;
+  transform: translateY(0.35em);
+}
+
+/* Logo monogram (AS) — real HTML for reliable rendering across devices */
+.logo-badge {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.logo-badge-s {
+  color: var(--color-ember);
+}
+
+/* Hero wisdom epigraph (rotating quote on the banner) */
+.hero-quote {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  max-width: 40rem;
+}
+.hero-quote__mark {
+  color: var(--color-ember);
+  font-size: 40px;
+  line-height: 0.9;
+  font-weight: 700;
+}
+.hero-quote__body {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.hero-quote__body.is-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.hero-quote__text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.hero-quote__author {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+@media (min-width: 640px) {
+  .hero-quote__mark {
+    font-size: 48px;
+  }
+  .hero-quote__text {
+    font-size: 19px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero banner extras: entrance, Ken Burns, signature, scroll cue, trust */
+/* ------------------------------------------------------------------ */
+
+/* Staggered fade-up entrance */
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-rise {
+  opacity: 0;
+  animation: heroRise 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+.hero-rise-1 { animation-delay: 0.05s; }
+.hero-rise-2 { animation-delay: 0.15s; }
+.hero-rise-3 { animation-delay: 0.27s; }
+.hero-rise-4 { animation-delay: 0.39s; }
+.hero-rise-5 { animation-delay: 0.51s; }
+.hero-rise-6 { animation-delay: 0.64s; }
+
+/* Ken Burns slow zoom on the portrait */
+@keyframes kenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.09);
+  }
+}
+.hero-kenburns {
+  transform-origin: 58% 38%;
+  filter: saturate(1.14) contrast(1.07) brightness(1.05);
+  animation: kenBurns 26s ease-in-out infinite alternate;
+}
+
+/* Hero scrims: keep text legible without dulling the whole image.
+   The bottom scrim is strong only in the lower third (where the text sits)
+   and fully clears by ~66%, so the face/upper image stays vibrant. */
+.hero-scrim-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 9rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(9, 9, 11, 0.5), transparent);
+}
+.hero-scrim-bottom {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(9, 9, 11, 0.92) 0%,
+    rgba(9, 9, 11, 0.5) 22%,
+    rgba(9, 9, 11, 0.12) 46%,
+    transparent 66%
+  );
+}
+
+/* Trust strip */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 24px;
+}
+.hero-trust__item {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+.hero-trust__item:not(:first-child) {
+  display: inline-flex;
+  align-items: center;
+}
+.hero-trust__item:not(:first-child)::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin: 0 14px;
+  border-radius: 9999px;
+  background: var(--color-ember);
+}
+
+/* Scroll cue */
+.hero-scrollcue {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  z-index: 20;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+}
+.hero-scrollcue svg {
+  animation: scrollBounce 1.8s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise {
+    opacity: 1;
+    animation: none;
+  }
+  .hero-kenburns,
+  .hero-scrollcue svg {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Header — a floating "island" pill at the top of the hero; on scroll  */
+/* it snaps into a full-width sticky bar hugging the top.               */
+/* ------------------------------------------------------------------ */
+#site-header {
+  --hdr-fg: var(--color-steel);
+  --hdr-fg-active: var(--color-obsidian);
+  --hdr-logo: var(--color-obsidian);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+/* Light text while floating on the banner (top of homepage) */
+#site-header.header--overlay:not(.is-scrolled) {
+  --hdr-fg: rgba(255, 255, 255, 0.85);
+  --hdr-fg-active: #ffffff;
+  --hdr-logo: #ffffff;
+}
+
+/* Inner wrapper: constrains width and holds the top gap that makes the
+   bar float; the gap collapses to 0 on scroll so the bar hugs the top. */
+.hdr-inner {
+  margin-inline: auto;
+  max-width: 1200px;
+  padding-inline: 24px;
+  padding-top: 12px;
+  transition: padding-top 0.3s ease;
+}
+@media (min-width: 640px) {
+  .hdr-inner {
+    padding-inline: 32px;
+    padding-top: 16px;
+  }
+}
+
+/* SCROLLED: full-width frosted bar pinned to the top */
+#site-header.is-scrolled {
+  background: color-mix(in srgb, var(--color-snow) 92%, transparent);
+  border-bottom-color: var(--color-cloud);
+}
+#site-header.is-scrolled .hdr-inner {
+  padding-top: 0;
+}
+
+/* The floating pill (only carries a background when NOT scrolled).
+   NB: no backdrop-filter anywhere in the header — it would make the header a
+   containing block and trap the fixed mobile drawer. */
+.navbar-bar {
+  border: 1px solid transparent;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* Hover reveals the pill while floating — light on interior pages */
+#site-header:not(.is-scrolled):not(.header--overlay) .navbar-bar:hover {
+  background: color-mix(in srgb, var(--color-snow) 90%, transparent);
+  border-color: var(--color-cloud);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+/* Hover reveals the pill while floating — dark over the hero */
+#site-header.header--overlay:not(.is-scrolled) .navbar-bar:hover {
+  background: rgba(10, 10, 12, 0.55);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Header elements read from the vars above */
+.hdr-logo {
+  color: var(--hdr-logo);
+}
+
+/* CTA: no background until hover, then it fills to the dark pill */
+.hdr-cta {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--hdr-fg-active);
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.hdr-cta:hover {
+  background: var(--color-obsidian);
+  border-color: #2c2e34;
+  color: #ffffff;
+}
+.hdr-link {
+  position: relative;
+  z-index: 0;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  color: var(--hdr-fg);
+  transition: color 0.2s ease;
+}
+/* Frosted pill that fades + scales in on hover */
+.hdr-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.82);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.hdr-link:hover {
+  color: var(--hdr-fg-active);
+}
+.hdr-link:hover::before {
+  opacity: 0.12;
+  transform: scale(1);
+}
+.hdr-link[data-active='true'] {
+  color: var(--hdr-fg-active);
+  font-weight: 500;
+}
+.hdr-link[data-active='true']::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Long-form article typography (.prose)                              */
+/* ------------------------------------------------------------------ */
+.prose {
+  color: var(--color-graphite);
+  font-size: 18px;
+  line-height: 1.75;
+}
+.prose > * + * {
+  margin-top: 1.35em;
+}
+.prose h2 {
+  font-size: 30px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-obsidian);
+  margin-top: 1.9em;
+}
+.prose h3 {
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--color-obsidian);
+  margin-top: 1.5em;
+}
+.prose p,
+.prose ul,
+.prose ol {
+  color: var(--color-graphite);
+}
+.prose a {
+  color: var(--color-obsidian);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-mist);
+  transition: text-decoration-color 0.2s ease;
+}
+.prose a:hover {
+  text-decoration-color: var(--color-ember);
+}
+.prose strong {
+  color: var(--color-obsidian);
+  font-weight: 600;
+}
+.prose ul {
+  list-style: disc;
+  padding-left: 1.25em;
+}
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.25em;
+}
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose blockquote {
+  border-left: 2px solid var(--color-obsidian);
+  padding-left: 24px;
+  margin-left: 0;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--color-obsidian);
+}
+.prose img {
+  border-radius: 24px;
+}
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--color-cloud);
+  margin: 2.4em 0;
+}
+.prose code {
+  background: var(--color-cloud);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.88em;
+}
+/* Drop cap on the opening paragraph */
+.prose > p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.82;
+  font-weight: 600;
+  padding-right: 0.08em;
+  color: var(--color-obsidian);
+}
