@@ -55,7 +55,7 @@ const splitLast = (s: string): [string, string] => {
     <div class="relative grid grid-cols-2">
       {img && (
         <>
-          <div class="aspect-[16/11] overflow-hidden">
+          <div class="aspect-[3/4] overflow-hidden sm:aspect-[16/11]">
             <Image
               src={img}
               alt={thinker.alt}
@@ -64,7 +64,7 @@ const splitLast = (s: string): [string, string] => {
               class="h-full w-full object-cover object-center"
             />
           </div>
-          <div class="aspect-[16/11] overflow-hidden">
+          <div class="aspect-[3/4] overflow-hidden sm:aspect-[16/11]">
             <Image
               src={img}
               alt={humanist.alt}
