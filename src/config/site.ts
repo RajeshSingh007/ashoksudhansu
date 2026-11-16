@@ -23,7 +23,7 @@ export const site = {
   description:
     'Thoughts on society, dialogue and the life of ideas from a teacher, journalist and philosopher — plus guidance for resolving conflict with clarity and dignity.',
   /** Contact email (used for mailto links everywhere). */
-  email: 'hello@example.com', // TODO: real contact email
+  email: 'akumarsudhansu@gmail.com',
   /** Production URL — keep in sync with astro.config.mjs `site`. */
   url: 'https://ashok.example.com',
 } as const;
