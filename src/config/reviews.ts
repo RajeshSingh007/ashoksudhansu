@@ -15,7 +15,7 @@ export interface Review {
 
 export const reviewsSection = {
   eyebrow: 'In their words',
-  title: 'The people he has helped, and the readers he has moved',
+  title: 'Hear directly from the people who were inspired along the way.',
   intro: '',
 };
 
